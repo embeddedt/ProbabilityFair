@@ -1,0 +1,23 @@
+Chip matches number - double the tickets
+Chip matches square color - 3 tickets
+Chip matches green square - 35 tickets
+
+==== Duck pluck ====
+
+Pick a duck
+Randomly decide the speed of each duck
+If you picked the winning duck, you get that number of tickets
+You can change your mind for a quarter of a race
+
+
+
+==== Ticket wheel ====
+
+Self-explanatory
+
+==== Shell game ====
+
+Rearrange the shells, one of them is worth 10 tickets, the others are worth 1
+
+
+==== Plinko ====

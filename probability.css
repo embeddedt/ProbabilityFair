@@ -1,0 +1,30 @@
+
+
+html, body, .whole-container {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#plinko {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+#plinko-canvas {
+    width: calc(100% - 32px);
+    height: calc(100% - 32px); 
+    margin-right: 32px;
+    margin-bottom: 32px;
+    max-width: 300px;
+}
+#plinko-canvas canvas {
+    background: gray;
+    border: 16px darkgray solid;
+    box-sizing: border-box;
+}
