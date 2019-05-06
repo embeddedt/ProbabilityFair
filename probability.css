@@ -8,6 +8,10 @@ html, body, .whole-container {
     position: absolute;
     top: 0;
     left: 0;
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 100%;
+    max-height: 100%;
 }
 
 #plinko {
@@ -27,4 +31,128 @@ html, body, .whole-container {
     background: gray;
     border: 16px darkgray solid;
     box-sizing: border-box;
+}
+
+#wheel1-div, #wheel1-containing-div {
+    transform-origin: center center;
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+}
+#wheel1-div {
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+#wheel1-containing-div {
+    margin: 2vmin;
+    width: 200px;
+    height: 200px;
+    pointer-events: none;
+}
+
+#wheel1 {
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    pointer-events: auto;
+}
+
+#arrow-div {
+    width: 30%;
+    height: 30%;
+    position: absolute;
+    top: -25%;
+    left: 36%;
+    z-index: 2;
+    overflow: hidden;
+    transform: rotateZ(-45deg);
+}
+
+#arrow {
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
+.prob-button {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ffc477), color-stop(1, #fb9e25));
+	background:-moz-linear-gradient(top, #ffc477 5%, #fb9e25 100%);
+	background:-webkit-linear-gradient(top, #ffc477 5%, #fb9e25 100%);
+	background:-o-linear-gradient(top, #ffc477 5%, #fb9e25 100%);
+	background:-ms-linear-gradient(top, #ffc477 5%, #fb9e25 100%);
+	background:linear-gradient(to bottom, #ffc477 5%, #fb9e25 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffc477', endColorstr='#fb9e25',GradientType=0);
+	background-color:#ffc477;
+	border:1px solid #eeb44f;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	text-decoration:none;
+        height: 30px;
+        max-width: 100%;
+        width: 200px;
+        margin: 5px;
+}
+.prob-button:hover:enabled {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #fb9e25), color-stop(1, #ffc477));
+	background:-moz-linear-gradient(top, #fb9e25 5%, #ffc477 100%);
+	background:-webkit-linear-gradient(top, #fb9e25 5%, #ffc477 100%);
+	background:-o-linear-gradient(top, #fb9e25 5%, #ffc477 100%);
+	background:-ms-linear-gradient(top, #fb9e25 5%, #ffc477 100%);
+	background:linear-gradient(to bottom, #fb9e25 5%, #ffc477 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fb9e25', endColorstr='#ffc477',GradientType=0);
+	background-color:#fb9e25;
+}
+
+.prob-button:disabled {
+  filter: gray; /* IE6-9 */
+  -webkit-filter: grayscale(1); /* Google Chrome, Safari 6+ & Opera 15+ */
+  filter: grayscale(1); /* Microsoft Edge and Firefox 35+ */
+}
+.prob-button:active:enabled {
+	position:relative;
+	top:1px;
+}
+
+
+
+.ui-widget-overlay
+{
+  opacity: .70 !important; /* Make sure to change both of these, as IE only sees the second one */
+  filter: Alpha(Opacity=.70) !important;
+
+  background: rgb(30, 30, 30) !important; /* This will make it darker */
+}
+
+.ui-dialog-title {
+    width: 100% !important;
+}
+
+
+.ui-dialog-titlebar-close {
+    visibility: hidden;
+    pointer-events: none;
+    display: none;
+}
+
+.ui-dialog {
+    max-width: 90vw;
+}
+
+.ui-dialog-content {
+    max-height: 60vh !important;
+}
+
+#wheel1-div, #wheel1-containing-div, #wheel1, #arrow, #arrow-div, .noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
 }

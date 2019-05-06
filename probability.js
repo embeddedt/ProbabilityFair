@@ -4,123 +4,167 @@
  * and open the template in the editor.
  */
 
-var game = null;
+var wheel1_chart;
 
-var theScene = null;
+var wasCorrect;
 
-var w, h, dim;
+var wins = 0, losses = 0;
 
-function getDimensions(selector) {
-    w = $(selector).width();
-    h = $(selector).height();
+var colorNames = [
+    'blue',
+    'yellow',
+    'red',
+    'green'
+];
+
+var chosenColor;
+
+var numSpins = 0;
+
+var theSpot = 0;
+
+var colorVals = [
+    'rgba(0, 100, 255, 1)',
+    'rgba(255, 255, 0, 1)',
+    'rgba(255, 0, 0, 1)',
+    'rgba(0, 255, 0, 1)'
+];
+
+var colorCombinations = [
+"RED",
+"YELLOW",
+"GREEN",
+"BLUE"
+];
+
+var numColors;
+
+var buttonColors = [
+    [],
+    [],
+    [],
+    []
+];
+
+var segments = [];
+
+var sortedColors = [];
+var segmentColorNums = [];
+
+if (!Array.prototype.indexOf)  Array.prototype.indexOf = (function(Object, max, min){
+  "use strict";
+  return function indexOf(member, fromIndex) {
+    if(this===null||this===undefined)throw TypeError("Array.prototype.indexOf called on null or undefined");
+    
+    var that = Object(this), Len = that.length >>> 0, i = min(fromIndex | 0, Len);
+    if (i < 0) i = max(0, Len+i); else if (i >= Len) return -1;
+    
+    if(member===void 0){ for(; i !== Len; ++i) if(that[i]===void 0 && i in that) return i; // undefined
+    }else if(member !== member){   for(; i !== Len; ++i) if(that[i] !== that[i]) return i; // NaN
+    }else                           for(; i !== Len; ++i) if(that[i] === member) return i; // all else
+
+    return -1; // if the value was not found, then return -1
+  };
+})(Object, Math.max, Math.min);
+
+$(window).resize(function() {
+    var w = $(window).width();
+    var h = $(window).height();
+    var dim;
     if(w < h)
         dim = w;
     else
         dim = h;
-}
-
-$(window).resize(function() {
-    getDimensions("#plinko-canvas");
-    if(game === null || theScene === null)
-        return;
-    game.scale.resize(dim, dim);
-    getDimensions("canvas");
-    theScene.restart();
-    theScene  = null;
+    dim /= 2;
+    if(dim > 400)
+        dim = 400;
+    console.log(dim);
+    $("#wheel1-containing-div").css({ width: dim, height: dim });
+    var fs =  dim / 8;
+    if(fs > 32)
+        fs = 32;
+    $("#text-contents").css({ 'font-size': fs });
 });
 
-var config = {
-    type: Phaser.AUTO,
-    width: 300,
-    height: 300,
-    scale: {
-        parent: "plinko-canvas",
-    mode: Phaser.Scale.NONE,
-    center: Phaser.Scale.CENTER_BOTH,
-    width: 300,
-    height: 300
-},
-    physics: {
-        default: 'arcade',
-        arcade: {
-            gravity: { y: 400 },
-            debug: true
-        }
-    },
-    scene: {
-        preload: preload,
-        create: create,
-        update: update
-    },
-    transparent: true
+$.fn.animateRotate = function(angle, duration, easing, complete) {
+  var args = $.speed(duration, easing, complete);
+  var step = args.step;
+  return this.each(function(i, e) {
+    args.complete = $.proxy(args.complete, e);
+    args.step = function(now) {
+      
+      $.style(e, 'transform', 'rotate(' + now + 'deg)');
+      $.attr(e, 'data-transform-rot', now);
+      if (step) return step.apply(e, arguments);
+    };
+
+    $({deg: parseFloat($.attr(e, 'data-transform-rot'))}).animate({deg: angle}, args);
+  });
 };
 
-
-
-function preload ()
-{
-
-    this.load.image('block', 'block.svg');
-    this.load.image('coin', 'coin.svg');
+function summedArray(array) {
+    var acc = 0;
+    for(var i = 0; i < array.length; i++) {
+        acc += array[i];
+    }
+    return acc;
 }
 
-function create ()
-{
-    /* The below values assume a 300x300 screen */
-    /* Scale them */
-    var theScale = dim/300;
-    var spacing = 60*theScale;
+function capitalizeFirstLetter(string) {
+    string = string.toLowerCase();
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function remakeTheChart() {
+    try { $("#nicework-dialog").dialog('close'); } catch (e) {}
+    try { $("#incorrect-dialog").dialog('close'); } catch (e) {}
+    $("#wheel1-div").animateRotate(-11.5, 0);
+    numColors = [ 0, 0, 0, 0];
+    var colorsRemaining = 16;
+    /* First generate the number of each color */
     
-    var pointsDim = 4*spacing;
-    
-    coin = this.physics.add.image(65, 20, 'coin');
-    coin.setScale(0.05*theScale);
-    /*coin.setCircle(259);*/
-    coin.setCollideWorldBounds(true);
-    coin.body.collideWorldBounds = true;
-    coin.body.setBounce(1, 1);
-    coin.body.mass = 1;
-    
-    coin.setVelocityX(getRandomInt(-10, 10));
-    this.input.setDraggable(coin.setInteractive());
-    
-    var off = Math.abs((pointsDim+(pointsDim/2))-(dim+(dim/2)));
-    off -= (spacing/2);
-    console.log(off);
-    
-    group = this.physics.add.group();
-    for(var j = 0; j < 4; j++) {
+    do {
         for(var i = 0; i < 4; i++) {
-            var extraOff;
-            if(j & 1) {
-                extraOff = 20;
-            } else
-                extraOff = 0;
-            extraOff *= theScale;
-            var image = this.physics.add.image(off+extraOff+(i*spacing), off+(10*theScale)+(j*spacing), 'block');
-            group.add(image);
-            image.setScale(0.07*theScale);
-            /*image.setCircle(170);*/
-            image.setCollideWorldBounds(true);
-            image.body.collideWorldBounds = true;
-            /*image.body.mass = 0.01;*/
-            image.body.mass = 1;
-            image.setImmovable();
-            image.body.setAllowGravity(false);
-            
+            if(numColors[i] === 0) {
+                numColors[i]++;
+                continue;
+            }
         }
+        numColors[getRandomInt(0, colorNames.length - 1)]++; 
+    } while(summedArray(numColors) < 16);
+    console.log(numColors);
+    sortedColors = [];
+    segmentColorNums = [ 0, 0, 0, 0];
+    for(var i = 0; i < 16; i++) {
+        var c = -1;
+        do {
+            c = getRandomInt(0, colorNames.length - 1);
+        } while(numColors[c] === 0);
+        segments[i] = colorNames[c];
+        segmentColorNums[c]++;
+        wheel1_chart.data.labels[i] = i;
+        wheel1_chart.data.datasets[0].data[i] = 1 / 16;
+        wheel1_chart.data.datasets[0].borderColor[i] = 'rgba(0, 0, 0, 1)';
+        wheel1_chart.data.datasets[0].backgroundColor[i] = colorVals[c];
+        numColors[c]--;
     }
     
+    wheel1_chart.update();
     
-    
-    
-    getDimensions("canvas");
-    console.log("w " + w + " h " + h);
-    
-    this.physics.world.bounds = new Phaser.Geom.Rectangle(10, 10, w - 10, h - 10);
-    this.physics.world.setBoundsCollision(true, true, true, true);
-    
-    theScene = this.scene;
+    var usedIntegers = [];
+    for(var i = 0; i < 4; i++) {
+        var $button = $("#prob-button-" + i);
+        var index = -1;
+        do {
+            index = getRandomInt(0, colorCombinations.length - 1);
+        } while(usedIntegers.indexOf(index) !== -1);
+        usedIntegers.push(index);
+        buttonColors[i] = colorCombinations[index].split(',');
+        for(var j = 0; j < buttonColors[i].length; j++) {
+            buttonColors[i][j] = capitalizeFirstLetter(buttonColors[i][j]);
+        }
+        $button.text(buttonColors[i]);
+    }
 }
 
 function getRandomInt(min, max) {
@@ -129,17 +173,146 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function update() {
-    this.physics.world.collide(coin, group, function() {
+
+function arrayFromMapKeys(theMap) {
+    var arr = [];
+    for (let [key, value] of theMap) {
+        arr.push(key);
+    }
+    return arr;
+}
+/* Intersection of two maps */
+/* Note that this assumes they both have the same value and no duplicates */
+function intersection(map1, map2) {
+    var result = new Map();
+    var keys1 = arrayFromMapKeys(map1);
+    var keys2 = arrayFromMapKeys(map2);
+    var listOfKeys = keys1.filter(function(n) {
+        return keys2.indexOf(n) !== -1;
+    });
+    console.log("Keys being used " + listOfKeys);
+    for(var i = 0; i < listOfKeys.length; i++) {
+        result.set(listOfKeys[i], map1.get(listOfKeys[i]));
+    }
+    return result;
+}
+
+function rotateAnim(spot, speed, self) {
+    if(speed === undefined)
+        speed = 1000;
+    var spins = getRandomInt(10, 40);
+    var rotateAngle = ((spot+1)*22.5)-11.5+(spins*360);
+    var curAngle = parseFloat($("#wheel1-div").attr("data-transform-rot"));
+    var buttonNum = parseInt(self.attr("data-button-num"));
+    var maxFrequency;
+    var maxFrequencyColor;
+    var colorMap;
+    if(buttonNum !== undefined && buttonColors[buttonNum] !== undefined) {
+        /* Create a sorted list of the colors by number */
+        colorMap = new Map();
+        for(var i = 0; i < 4; i++) {
+            colorMap.set(colorNames[i], segmentColorNums[i]);
+        }
+        colorMap[Symbol.iterator] = function* () {
+            yield* [...this.entries()].sort((a, b) => b[1] - a[1]);
+        };
+        console.log("color frequency table:");
+        for (let [key, value] of colorMap) {
+            if(maxFrequency === undefined) {
+                maxFrequencyColor = key;
+                maxFrequency = parseInt(value);
+            }
+            console.log(key + ' - ' + value);
+        }
+
+        var buttonColor = buttonColors[buttonNum][0].toLowerCase();
+        chosenColor = buttonColor;
+        wasCorrect = (colorMap.get(buttonColor) === maxFrequency);
+        
+    }
+    $("#wheel1-div").animateRotate(-rotateAngle, 500*(Math.abs(rotateAngle)/360), 'swing', function() {
+        console.log("At spot " + spot + " is color " + segments[spot]);
+        var wasColorEqual = true;
+        
+        $("#i-won-anyway").hide();
+        if(chosenColor === segments[spot]) {
+            wins++;
+            $("#remember-info").hide();
+            if(!wasCorrect)
+                $("#i-won-anyway").show();
+        } else {
+            losses++;
+            for (let [key, value] of colorMap) {
+                if(maxFrequency !== parseInt(value))
+                    break;
+                if(segments[spot] !== key) {
+                    wasColorEqual = false;
+                    numSpins++;
+                    if(numSpins === 3) {
+                        $("#condense-this").hide();
+                    }
+                    $("#remember-info").show();
+                    break;
+                }
+            }
+            if(wasColorEqual) {
+                $("#remember-info").hide();
+            }
+        }
+        
+        $("#wins").text(wins);
+        $("#losses").text(losses);
+        $(".chosen-color").text(chosenColor);
+        $(".prob-button").attr("disabled", false);
+        if(buttonNum !== undefined && buttonColors[buttonNum] !== undefined && wasCorrect) {
+            $("#nicework-dialog").dialog({ modal: true });
+        } else {
+            $("#incorrect-dialog").dialog({ modal: true });
+        }
         
     });
-}
-    
+};
 $(window).load(function() {
-    getDimensions("#plinko-canvas");
-    config.width = dim;
-    config.height = dim;
-    config.scale.width = dim;
-    config.scale.height= dim;
-    game = new Phaser.Game(config);
+    var ctx = document.getElementById('wheel1').getContext('2d');
+    document.getElementById('wheel1').style.backgroundColor = 'rgba(0, 0, 0, 0)';
+    wheel1_chart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [ 1 ],
+                backgroundColor: [
+                    'rgba(242, 235, 164, 1)',
+                ],
+                borderColor: [
+                    'rgba(0, 0, 0, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            animation: {
+                duration: 0
+            },
+            legend: {
+            display: false
+            },
+            
+            tooltips: {
+                enabled: false
+            },
+            hover: {
+                mode: null
+            } 
+        }
+    });
+    $("#wheel1-div").attr("data-transform-rot", 0);
+    remakeTheChart();
+    
+    $(window).resize();
+    $(".prob-button").click(function() {
+        $(".prob-button").attr("disabled", true);
+        theSpot = getRandomInt(0, 15);
+        rotateAnim(theSpot, 100, $(this));
+    });
 });

@@ -9,16 +9,72 @@ and open the template in the editor.
         <title>TODO supply a title</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script type="text/javascript" src="smap-shim.min.js"></script>
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
         <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <script src="jquery.ui.touch-punch.min.js"></script>
+        
         <script src="//cdn.jsdelivr.net/npm/phaser@3.16.2/dist/phaser.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
         <script src="jquery.alterclass.js"></script>
         <link rel="stylesheet" href="probability.css">
         <script src="probability.js"></script>
     </head>
     <body>
-        <div id="plinko" class="whole-container"><div id="plinko-canvas"></div></div>
+        <div title="Nice work!" id="nicework-dialog" style="display: none;">
+            Nice job! One of the most probable colors is <b><span class="chosen-color"></span></b>; there may be more.
+            <p>
+            <span id='remember-info'>
+                Unfortunately, it looks like you didn't win the spin.
+                <span id='condense-this'>
+                Remember, this was a prediction, not a guarantee. It's possible for
+                the color that came up on the wheel to not match your guess. You just
+                made an educated mathematical guess.
+                </span>
+            </span>
+            <p>
+            <center>
+                <button onclick="remakeTheChart();">OK</button>
+            </center>
+        </div>
+        <div title="Nope" id="incorrect-dialog" style="display: none;">
+            Looks like you didn't make an accurate prediction.
+            <p>
+            <span id='i-won-anyway'>You won the spin, but that was just a lucky guess.
+                You're much more likely to win if you choose the most probable color.</span>
+            <p>
+                <b>Hint:</b> Was the color you chose (<b><span class='chosen-color'></span></b>) the color with the most segments on the wheel?
+            <p>
+            <center>
+                <button onclick="remakeTheChart();">OK</button>
+            </center>
+        </div>
+        <div class="whole-container" style="text-align: center;">
+            <p>
+                <b><span id="text-contents">Which of these colors is most likely to be spun on the wheel?</span></b>
+            <p>
+            <span style="font-weight: bold; font-size: 20px;">Wins: <span id='wins'>0</span>&nbsp;&nbsp;&nbsp; Losses: <span id='losses'>0</span></span>
+            <div style='height: 3vh;'></div>
+            <div id="wheel1-containing-div">
+                <div id="arrow-div">
+                    <img id="arrow" alt="" src="long-arrow-down-left.svg"/>
+                </div>
+                <div id="wheel1-div">
+                    
+                <canvas id="wheel1"></canvas>
+                </div>
+            </div>
+            <div style="display: inline-block; font-size: 0px; vertical-align: middle;">
+            <button class="prob-button" id="prob-button-0" data-button-num="0">Red</button>
+            <br>
+            <button class="prob-button" id="prob-button-1" data-button-num="1">Red</button>
+            <br>
+            <button class="prob-button" id="prob-button-2" data-button-num="2">Red</button>
+            <br>
+            <button class="prob-button" id="prob-button-3" data-button-num="3">Red</button>
+            </div>
+            
+        </div>
     </body>
 </html>
