@@ -156,3 +156,15 @@ html, body, .whole-container {
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome and Opera */
 }
+
+.the-dialog-text {
+    font-size: 16px;
+}
+
+#correct-dialog-text {
+    background-color: rgba(0, 255, 128, 0.3);
+}
+
+#incorrect-dialog-text {
+    background-color: rgba(255,0, 0, 0.3);
+}

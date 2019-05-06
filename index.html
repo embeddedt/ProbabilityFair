@@ -23,32 +23,10 @@ and open the template in the editor.
     </head>
     <body>
         <div title="Nice work!" id="nicework-dialog" style="display: none;">
-            Nice job! One of the most probable colors is <b><span class="chosen-color"></span></b>; there may be more.
-            <p>
-            <span id='remember-info'>
-                Unfortunately, it looks like you didn't win the spin.
-                <span id='condense-this'>
-                Remember, this was a prediction, not a guarantee. It's possible for
-                the color that came up on the wheel to not match your guess. You just
-                made an educated mathematical guess.
-                </span>
-            </span>
-            <p>
-            <center>
-                <button onclick="remakeTheChart();">OK</button>
-            </center>
+           
         </div>
         <div title="Nope" id="incorrect-dialog" style="display: none;">
-            Looks like you didn't make an accurate prediction.
-            <p>
-            <span id='i-won-anyway'>You won the spin, but that was just a lucky guess.
-                You're much more likely to win if you choose the most probable color.</span>
-            <p>
-                <b>Hint:</b> Was the color you chose (<b><span class='chosen-color'></span></b>) the color with the most segments on the wheel?
-            <p>
-            <center>
-                <button onclick="remakeTheChart();">OK</button>
-            </center>
+            
         </div>
         <div class="whole-container" style="text-align: center;">
             <p>
@@ -65,14 +43,44 @@ and open the template in the editor.
                 <canvas id="wheel1"></canvas>
                 </div>
             </div>
-            <div style="display: inline-block; font-size: 0px; vertical-align: middle;">
-            <button class="prob-button" id="prob-button-0" data-button-num="0">Red</button>
-            <br>
-            <button class="prob-button" id="prob-button-1" data-button-num="1">Red</button>
-            <br>
-            <button class="prob-button" id="prob-button-2" data-button-num="2">Red</button>
-            <br>
-            <button class="prob-button" id="prob-button-3" data-button-num="3">Red</button>
+            <div style="display: inline-block; font-size: 0px; vertical-align: middle; width: 200px;">
+                <div class="the-dialog-text" id="incorrect-dialog-text">
+                    Looks like you didn't make an accurate prediction.
+                    <p>
+                    <span id='i-won-anyway'>You won the spin, but that was just a lucky guess.
+                        You're much more likely to win if you choose the most probable color.</span>
+                    <p>
+                        <b>Hint:</b> Was the color you chose (<b><span class='chosen-color'></span></b>) the color with the most segments on the wheel?
+                    <p>
+                    <center>
+                        <button onclick="remakeTheChart();">OK</button>
+                    </center>
+                </div>
+                <div class="the-dialog-text" id="correct-dialog-text">
+                    Nice job! One of the most probable colors is <b><span class="chosen-color"></span></b>; there may be more.
+                    <p>
+                    <span id='remember-info'>
+                        Unfortunately, it looks like you didn't win the spin.
+                        <span id='condense-this'>
+                        Remember, this was a prediction, not a guarantee. It's possible for
+                        the color that came up on the wheel to not match your guess. You just
+                        made an educated mathematical guess.
+                        </span>
+                    </span>
+                    <p>
+                    <center>
+                        <button onclick="remakeTheChart();">OK</button>
+                    </center>
+                </div>
+                <div id="prob-buttons-div">
+                    <button class="prob-button" id="prob-button-0" data-button-num="0">Red</button>
+                    <br>
+                    <button class="prob-button" id="prob-button-1" data-button-num="1">Red</button>
+                    <br>
+                    <button class="prob-button" id="prob-button-2" data-button-num="2">Red</button>
+                    <br>
+                    <button class="prob-button" id="prob-button-3" data-button-num="3">Red</button>
+                </div>
             </div>
             
         </div>

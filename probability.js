@@ -116,8 +116,9 @@ function capitalizeFirstLetter(string) {
 }
 
 function remakeTheChart() {
-    try { $("#nicework-dialog").dialog('close'); } catch (e) {}
-    try { $("#incorrect-dialog").dialog('close'); } catch (e) {}
+    $("#correct-dialog-text").hide();
+    $("#incorrect-dialog-text").hide();
+    $("#prob-buttons-div").show();
     $("#wheel1-div").animateRotate(-11.5, 0);
     numColors = [ 0, 0, 0, 0];
     var colorsRemaining = 16;
@@ -265,10 +266,11 @@ function rotateAnim(spot, speed, self) {
         $(".chosen-color").text(chosenColor);
         $(".prob-button").attr("disabled", false);
         if(buttonNum !== undefined && buttonColors[buttonNum] !== undefined && wasCorrect) {
-            $("#nicework-dialog").dialog({ modal: true });
+            $("#correct-dialog-text").show();
         } else {
-            $("#incorrect-dialog").dialog({ modal: true });
+            $("#incorrect-dialog-text").show();
         }
+        $("#prob-buttons-div").hide();
         
     });
 };
